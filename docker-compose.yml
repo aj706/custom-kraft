@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  # Controller-only nodes
+  controller1:
+    build: .
+    container_name: kraft-controller-1
+    environment:
+      CONFIG_FILE: /config/controller-1.properties
+      CLUSTER_ID: ${CLUSTER_ID}
+    volumes:
+      - ./config:/config:ro
+      - ./data/controller-1:/var/lib/kafka/data
+    ports:
+      - "19093:9093"
+  controller2:
+    build: .
+    container_name: kraft-controller-2
+    environment:
+      CONFIG_FILE: /config/controller-2.properties
+      CLUSTER_ID: ${CLUSTER_ID}
+    volumes:
+      - ./config:/config:ro
+      - ./data/controller-2:/var/lib/kafka/data
+    ports:
+      - "19094:9093"
+  controller3:
+    build: .
+    container_name: kraft-controller-3
+    environment:
+      CONFIG_FILE: /config/controller-3.properties
+      CLUSTER_ID: ${CLUSTER_ID}
+    volumes:
+      - ./config:/config:ro
+      - ./data/controller-3:/var/lib/kafka/data
+    ports:
+      - "19095:9093"
+
+  # Broker nodes
+  broker1:
+    build: .
+    container_name: kraft-broker-1
+    depends_on: [controller1, controller2, controller3]
+    environment:
+      CONFIG_FILE: /config/broker-1.properties
+      CLUSTER_ID: ${CLUSTER_ID}
+    volumes:
+      - ./config:/config:ro
+      - ./data/broker-1:/var/lib/kafka/data
+    ports:
+      - "19092:9092"
+  broker2:
+    build: .
+    container_name: kraft-broker-2
+    depends_on: [controller1, controller2, controller3]
+    environment:
+      CONFIG_FILE: /config/broker-2.properties
+      CLUSTER_ID: ${CLUSTER_ID}
+    volumes:
+      - ./config:/config:ro
+      - ./data/broker-2:/var/lib/kafka/data
+    ports:
+      - "19096:9092"
+  broker3:
+    build: .
+    container_name: kraft-broker-3
+    depends_on: [controller1, controller2, controller3]
+    environment:
+      CONFIG_FILE: /config/broker-3.properties
+      CLUSTER_ID: ${CLUSTER_ID}
+    volumes:
+      - ./config:/config:ro
+      - ./data/broker-3:/var/lib/kafka/data
+    ports:
+      - "19097:9092"
+
